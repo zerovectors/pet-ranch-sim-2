@@ -852,6 +852,14 @@ function antiafk()
 	end)
 end
 
+function createchangelog()
+	rconsolename("-- Changelog For Pet Ranch Simuwulator -- ")
+	rconsoleprint("@@MAGENTA@@")
+	rconsoleprint("-- Changelog For Pet Ranch Simuwulator "..version)
+	rconsoleprint("@@WHITE@@")
+	rconsoleprint("\n[+] Released The Pet Ranch UI, Not Fully Done Yet But Will Be Soon:tm:")
+end
+
 function fireButton1(button)
 	for i,signal in next, getconnections(button.MouseButton1Down) do
 		signal:Fire()
@@ -1596,6 +1604,7 @@ end)
 
 library:Init()
 hintmsg.Text = "Initialization Complete, Enjoy 😎"
+createchangelog()
 wait(.5)
 uiwatermark()
 antiafk()
