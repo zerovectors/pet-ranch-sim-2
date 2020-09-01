@@ -3,7 +3,7 @@ local hintmsg = Instance.new("Hint", game.CoreGui)
 local attempt = tick()
 hintmsg.Text = "Initializing UI Library This Can Take Up To 30 Seconds"
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/framework/master/uwuware%20framework", true))()
-local version = "2"
+local version = "2.1"
 local uiname = "Pet Ranch 2 UI"
 local ui = { }
 local main = { }
@@ -14,6 +14,8 @@ local loops = { }
 function GetCamera()
 	return workspace:FindFirstChildOfClass("Camera")
 end
+local mouse = game.Players.LocalPlayer:GetMouse()
+local TweenService = game:GetService("TweenService")
 local Plrs = game.Players
 local MyPlr = Plrs.LocalPlayer
 local MyChar = MyPlr.Character
@@ -34,11 +36,11 @@ local messages_of_the_day = nil
 
 game:GetService("ScriptContext").Error:Connect(function(message)
 	print("Reason: "..message)
-	hintmsg.Text = "Initializing Failed, Error; "..message
+	main:Console("Initializing Failed, Error; "..message)
 	if message == "HttpError: ConnectFail" then
-		main:Console("Initializing Failed!| Error; "..message.." | Fix; Re-Execute or ReJoin")
+		main:Console("Initializing Failed; Code 4 | ReJoin")
 	end
-	wait(4)
+	wait(6)
 	hintmsg:Remove()
 end)
 
@@ -47,15 +49,16 @@ do -- notification
         loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/notification/master/createnotification", true))()
     end
     function notification:sendnotification(text)
-        game.CoreGui.uwuware:WaitForChild("Notification"):TweenSize(UDim2.new(0, 1917,0, 26), "Out", "Linear", .2, true)
+        game.CoreGui.uwuware.Notification:TweenSize(UDim2.new(0, 1917,0, 26), "Out", "Linear", .2, true)
         wait(.2)
         for i = 1, #text do
-            game.CoreGui.uwuware:WaitForChild("Notification").Message.Text = string.sub(text, 1, i)
+            game.CoreGui.uwuware.Notification.Message.Text = string.sub(text, 1, i)
             wait(.03)
         end
         wait(.5)
-        game.CoreGui.uwuware:WaitForChild("Notification").Message.Text = ""
-        game.CoreGui.uwuware:WaitForChild("Notification"):TweenSize(UDim2.new(0, 1917,0, 0), "Out", "Linear", .2, true)
+        game.CoreGui.uwuware.Notification.Message.Text = ""
+        game.CoreGui.uwuware.Notification:TweenSize(UDim2.new(0, 1917,0, 0), "Out", "Linear", .2, true)
+    
     end
 end
 do -- loop functions 
@@ -270,7 +273,7 @@ do -- main
     };
     main.petstable = { };
     main.eggstable = { };
-    main.petnames = { }
+    main.petnames = { };
     main.starrypetnames = { };
     if main.espsettings.CHAMSLength > 2048 then
         main.espsettings.CHAMSLength = 2048
@@ -323,14 +326,13 @@ do -- main
             end
             Run.RenderStepped:wait()
         until type(msg) ~= "table"
+        local n = 0
         spawn(function()
-            local n = 0
             while msg.Text == "Vect0rs; " .. txt do
                 msg.TextColor3 = Color3.fromHSV(n, 0.4, 1)
                 n = (n + 0.01) % 1
                 Run.RenderStepped:wait()
             end
-            msg.TextColor3 = Color3.new(1, 1, 1)
         end)
     end
     function main:vectorshub()
@@ -357,11 +359,6 @@ do -- main
             _G.username = MyPlr.Name
         end
         loadstring(game:HttpGet("https://pastebin.com/raw/MH2ki4NT", true))()
-    end
-    function main:fireButton1(button)
-        for i,signal in next, getconnections(button.MouseButton1Down) do
-            signal:Fire()
-        end
     end
     function main:fullbright()
         if library.flags.FullBright then
@@ -1499,10 +1496,6 @@ do -- ui
                 library.flags["flytog"] = a
                 main:flytoggle()
             end})
-            ui.character:AddToggle({text = "Vehicle Fly", flag = "vflytog", callback = function(a)
-                library.flags["vflytog"] = a
-                main:vehicleflytoggle()
-            end})
         end
         do -- miscellaneous
             ui.miscellaneous = library:CreateWindow("Miscellaneous")
@@ -1539,9 +1532,6 @@ do -- ui
             ui.miscellaneous:AddToggle({text = "Auto Play Pet Rush", flag = "autoplaypetrush", callback = function(a)
                 library.flags["autoplaypetrush"] = a
                 main:AutoPlayPetRush()
-            end})
-            ui.miscellaneous:AddButton({text = "BHop", callback = function()
-                main:Bhop()
             end})
             ui.miscellaneous:AddButton({text = "ReJoin", callback = function()
                 main:ReJoin()
@@ -1584,18 +1574,18 @@ do -- ui
             main.uisettings:AddColor({text = "Cursor Color", flag = "cursorcolor", color = Color3.fromRGB(221, 3, 255), callback = function(a)
                 main:cursorcolor(a)
             end})
-            main.uisettings:AddBind({text = "Toggle UI", key = "Q", callback = function() 
-                library:Close()
-            end})
             if main.creator_accounts[MyPlr.UserId] or main.admin_accounts[MyPlr.UserId] then
                 main.uisettings:AddToggle({text = "Cursor", state = true, flag = "CursorTog", callback = function(a)
                     library.flags["CursorTog"] = a
                     main:CursorTog()
                 end})
                 main.uisettings:AddToggle({text = "UI Watermark", state = true, callback = function(a)
-                    game.CoreGui:WaitForChild("uwuware"):WaitForChild("watermark").Visible = a
+                    game.CoreGui:WaitForChild("uwuware").watermark.Visible = a
                 end})
             end
+            main.uisettings:AddBind({text = "Toggle UI", key = "Q", callback = function() 
+                library:Close()
+            end})
             main.topbar = main.uisettings:AddFolder("Top Bar")
             main.topbar:AddColor({text = "Line Colour", flag = "color", color = Color3.fromRGB(221, 3, 255), callback = function(a)
                 main:splitlinecolor(a)
