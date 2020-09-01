@@ -360,6 +360,11 @@ do -- main
         end
         loadstring(game:HttpGet("https://pastebin.com/raw/MH2ki4NT", true))()
     end
+    function main:fireButton1(button)
+        for i,signal in next, getconnections(button.MouseButton1Down) do
+            signal:Fire()
+        end
+    end
     function main:fullbright()
         if library.flags.FullBright then
             notification:sendnotification("FullBright Enabled")
