@@ -3,7 +3,7 @@ local hintmsg = Instance.new("Hint", game.CoreGui)
 local attempt = tick()
 hintmsg.Text = "Initializing UI Library This Can Take Up To 30 Seconds"
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/framework/master/uwuware%20framework", true))()
-local version = "2.1"
+local version = "2.2"
 local uiname = "Pet Ranch 2 UI"
 local ui = { }
 local main = { }
@@ -142,16 +142,11 @@ do -- loops
         end
     end, Run.RenderStepped)
     loopfunctions:CreateLoop("Auto Delete Unlocked Pets", function()
-        for i,v in pairs(MyPlr.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
-            if v:IsA("ImageButton") and not v.PetLock.Visible then
-                main.petstable[v.Name] = true
-                local args = {
-                    [1] = "MassDeletePetsFromInventory",
-                    [2] = main.petstable
-                }
-                game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
-            end
-        end
+            local args = {
+                [1] = "MassDeletePetsFromInventory",
+                [2] = main.petstable
+            }
+            game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
     end, 0)
     loopfunctions:CreateLoop("Auto Open Egg", function()
         local args = {"BuyEgg", library.flags["selectedegg"]}
@@ -1253,11 +1248,21 @@ do -- main
                 table.insert(main.petnames, v.Name)
             end
         end
-        for i,v in pairs(game.ReplicatedStorage.PetDirectory:GetChildren()) do
-            if v.Name:match("Shiny") then
-                table.insert(main.starrypetnames, v.Name)
+        for i,v in pairs(MyPlr.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
+            if v:IsA("ImageButton") and not v.PetLock.Visible then
+                main.petstable[v.Name] = true
             end
         end
+        MyPlr.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame.ChildAdded:Connect(function(name)
+            for i,v in pairs(MyPlr.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
+                if v:IsA("ImageButton") and not v.PetLock.Visible then
+                    main.petstable[v.Name] = true
+                end
+           end
+        end)
+        MyPlr.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame.ChildRemoved:Connect(function(name)
+            main.petstable[name.Name] = false
+        end)
         warn('done tables')
     end
     function main:CollectCoins()
