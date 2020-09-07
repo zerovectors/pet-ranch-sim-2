@@ -134,11 +134,13 @@ do -- loops
             end
         end
     end, 160)
-    loopfunctions:RunLoop("Messages Of The Day", function()
+    loopfunctions:CreateLoop("Messages Of The Day", function()
         if messages_of_the_day == nil then return end
         for i = 1, #messages_of_the_day do
-            main:SystemChat(tostring(messages_of_the_day[i]))
-            wait(60)
+            if library.flags["msgsoftheday"] then
+                main:SystemChat(tostring(messages_of_the_day[i]))
+                wait(60)
+            end
         end
     end, Run.RenderStepped)
     loopfunctions:CreateLoop("Auto Delete Unlocked Pets", function()
