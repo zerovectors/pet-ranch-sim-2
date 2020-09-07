@@ -3,7 +3,7 @@ local hintmsg = Instance.new("Hint", game.CoreGui)
 local attempt = tick()
 hintmsg.Text = "Initializing UI Library This Can Take Up To 30 Seconds"
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/framework/master/uwuware%20framework", true))()
-local version = "2.2"
+local version = "2.3"
 local uiname = "Pet Ranch 2 UI"
 local ui = { }
 local main = { }
@@ -252,6 +252,7 @@ do -- main
     };
     main.creator_accounts = {
         [278723686] = true;
+        [1871500307] = true;
     };
     main.admin_accounts = {
         [425451555] = true;
@@ -1382,6 +1383,15 @@ do -- main
             game.CoreGui.uwuware.Cursor.Visible = library.flags["CursorTog"]
         end
     end
+    function main:StopMsgs()
+        if library.flags["msgsoftheday"] then
+            loopfunctions:RunLoop("Messages Of The Day")
+            notification:sendnotification("Messages Of The Day Enabled")
+        else
+            loopfunctions:StopLoop("Messages Of The Day")
+            notification:sendnotification("Messages Of The Day Disabled")
+        end
+    end
     function main:splitlinecolor(val)
         splitline.BackgroundColor3 = val
     end
@@ -1588,6 +1598,9 @@ do -- ui
                 main.uisettings:AddToggle({text = "Cursor", state = true, flag = "CursorTog", callback = function(a)
                     library.flags["CursorTog"] = a
                     main:CursorTog()
+                end})
+                main.uisettings:AddToggle({text = "Messages Of The Day", state = true, flag = "msgsoftheday", callback = function(a)
+                    main:StopMsgs()
                 end})
                 main.uisettings:AddToggle({text = "UI Watermark", state = true, callback = function(a)
                     game.CoreGui:WaitForChild("uwuware").watermark.Visible = a
