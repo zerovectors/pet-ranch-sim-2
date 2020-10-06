@@ -2,14 +2,12 @@
 local hintmsg = Instance.new("Hint", game.CoreGui)
 local attempt = tick()
 hintmsg.Text = "Initializing UI Library This Can Take Up To 30 Seconds"
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/framework/master/uwuware%20framework", true))()
-local version = "2.3"
-local uiname = "Pet Ranch 2 UI"
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/framework/master/vect0rs%20hub%20framework%20uwuware%20checkmarks", true))()
+local version = "3"
+local uiname = "Pet Ranch 2"
 local ui = { }
 local main = { }
 local loopfunctions = { }
-local vectorshub = { }
-local notification = { }
 local loops = { }
 function GetCamera()
 	return workspace:FindFirstChildOfClass("Camera")
@@ -43,24 +41,6 @@ game:GetService("ScriptContext").Error:Connect(function(message)
 	wait(6)
 	hintmsg:Remove()
 end)
-
-do -- notification
-    function notification:Init()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/notification/master/createnotification", true))()
-    end
-    function notification:sendnotification(text)
-        game.CoreGui.uwuware.Notification:TweenSize(UDim2.new(0, 1917,0, 26), "Out", "Linear", .2, true)
-        wait(.2)
-        for i = 1, #text do
-            game.CoreGui.uwuware.Notification.Message.Text = string.sub(text, 1, i)
-            wait(.03)
-        end
-        wait(.5)
-        game.CoreGui.uwuware.Notification.Message.Text = ""
-        game.CoreGui.uwuware.Notification:TweenSize(UDim2.new(0, 1917,0, 0), "Out", "Linear", .2, true)
-    
-    end
-end
 do -- loop functions 
     function loopfunctions:LoopRunning(name)
 		return loops[name].Running
@@ -116,69 +96,61 @@ do -- loop functions
 	end
 end
 do -- loops
-    loopfunctions:CreateLoop("Time", function()
-        local timedata = os.date("*t")
-        _G.usertime = tostring(timedata.hour..";"..timedata.min..";"..timedata.sec)
-    end, Run.RenderStepped:wait())
     loopfunctions:RunLoop("Version_Check", function()
         local data = loadstring(game:HttpGet("https://pastebin.com/raw/MhwMYaFu", true))()
         messages_of_the_day = data.messages_of_the_day
-        data = data["Pet Ranch 2"]
+        data = data["Pet Battle Simulator"]
         local current_version, reason = data.version, data.reason
         if version ~= current_version then
             if data.force_kick then
                 MyPlr:Kick("This script has updated, please re-connect. Current Version: " .. tostring(current_version) .. " your version: " .. version .. "\nReason: " .. reason)
             else
-                notification:sendnotification("Minor script update, restart ROBLOX to get latest version. Reason:" .. reason)
+                library:SendNotification("Minor script update, restart ROBLOX to get latest version. Reason:" .. reason)
                 main:SystemChat("Minor script update, restart ROBLOX to get latest version. Reason:" .. reason)
             end
         end
     end, 160)
-    loopfunctions:CreateLoop("Messages Of The Day", function()
-        if messages_of_the_day == nil then return end
-        for i = 1, #messages_of_the_day do
-            if library.flags["msgsoftheday"] then
-                main:SystemChat(tostring(messages_of_the_day[i]))
-                wait(60)
-            end
-        end
-    end, Run.RenderStepped)
     loopfunctions:CreateLoop("Auto Delete Unlocked Pets", function()
-            local args = {
-                [1] = "MassDeletePetsFromInventory",
-                [2] = main.petstable
-            }
-            game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
-    end, 0)
+        local args = {
+            [1] = "MassDeletePetsFromInventory",
+            [2] = main.petstable
+        }
+        game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
+    end, Run.RenderStepped)
+    loopfunctions:CreateLoop("Auto Open 3Eggs", function()
+        local args = {"BuyThreeEggs", library.flags["selectedegg"]}
+        game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
+    end, Run.RenderStepped)
     loopfunctions:CreateLoop("Auto Open Egg", function()
         local args = {"BuyEgg", library.flags["selectedegg"]}
         game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
-    end, 0)
+    end, Run.RenderStepped)
     loopfunctions:CreateLoop("Auto Shiny", function()
-        for i,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
-            if v:IsA("ImageButton") then
-                local args = {
-                    [1] = "MakeShinyPet",
-                    [2] = v.Name,
-                    [3] = library.flags["chosenpettoshine"],
-                }
-                game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
+        for i,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetIndex.PetIndexInnerFrame.PetIndexScrollingFrame:GetChildren()) do
+            for i2,v2 in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
+                if v2:IsA("ImageButton") then  
+                    if v:IsA("ImageLabel") then
+                        if v.PetIndexSlotPic.PetImage.Image == v2.PetImage.Image then
+                            if library.flags.ignorelegendarys and v.PetIndexSlotPic.Rarity.Text == "Legendary" then
+                            elseif library.flags.ignorerares and v.PetIndexSlotPic.Rarity.Text == "Rare" then
+                            elseif library.flags.ignorecommons and v.PetIndexSlotPic.Rarity.Text == "Common" then
+                            elseif library.flags.ignoreuncommons and v.PetIndexSlotPic.Rarity.Text == "Uncommon" then
+                            elseif library.flags.ignoreepics and v.PetIndexSlotPic.Rarity.Text == "Epic" then
+                            else
+                                local args = {
+                                    [1] = "MakeShinyPet",
+                                    [2] = v2.Name,
+                                    [3] = v.Name,
+                                }
+                                game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
+                            end
+                        end
+                    end
+                end
             end
         end
-    end, 0)
-    loopfunctions:CreateLoop("Auto Starry", function()
-        for i,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
-            if v:IsA("ImageButton") then
-                local args = {
-                    [1] = "MakeStarryPet",
-                    [2] = v.Name,
-                    [3] = library.flags["chosenpettostarry"],
-                }
-                game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
-            end
-        end
-    end, 0)
-    loopfunctions:CreateLoop("Auto Collect Pet Coins", function()
+    end, Run.RenderStepped)
+    loopfunctions:CreateLoop("AutoFarm", function()
         for i,v in pairs(game.Players.LocalPlayer.PlayerGui.BubbleGuis:GetDescendants()) do
             if v.Name == "ImageButton" then
                 if v.Parent.Enabled == true then
@@ -186,13 +158,7 @@ do -- loops
                 end
             end
         end
-    end, 0)
-    loopfunctions:CreateLoop("Auto Spin Wheel", function()
-        local args = {
-            [1] = "GenerateRewardWheelResult",
-        }
-        game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
-    end, 0)
+    end, Run.RenderStepped)
     loopfunctions:CreateLoop("Auto Rebirth", function()
         local args = {
             [1] = "RebirthPlayer",
@@ -201,13 +167,27 @@ do -- loops
             [4] = false,
         }
         game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
-    end, 0)
+        wait(library.flags["rebirthdelay"])
+    end, Run.RenderStepped)
     loopfunctions:CreateLoop("Auto Equip Pets", function()
         local args = {
             [1] = "EquipTopPets",
         }
         game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
-    end, 0)
+    end, Run.RenderStepped)
+    loopfunctions:CreateLoop("Auto Buy Upgrades", function()
+        local args = {"UpgradeResearch", 
+            library.flags["ItemChosen"]
+        }
+        game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
+        wait(library.flags["autobuyrate"])
+    end, Run.RenderStepped)
+    loopfunctions:CreateLoop("Auto Spin Wheel", function()
+        local args = {
+            [1] = "GenerateRewardWheelResult",
+        }
+        game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
+    end, 500)
     loopfunctions:CreateLoop("Auto Play Flying Pet", function()
         for i,v in pairs(game.workspace:WaitForChild("FlappyMinigame"):GetChildren()) do
             if v.Name == "Coin" then
@@ -252,27 +232,17 @@ do -- main
         CharAddedEvent = { };
         Mob_ESP_CHAMS_Ran_Once = false;
     };
-    main.creator_accounts = {
-        [278723686] = true;
-        [1871500307] = true;
-    };
-    main.admin_accounts = {
-        [425451555] = true;
-        [516093458] = true;
-    };
-    main.whitelisted_accounts = {
-        [278723686] = true;
-        [425451555] = true;
-        [516093458] = true;
-        [454446503] = true;
-        [807746976] = true;
-        [311446911] = true;
-        [534973588] = true;
-    };
+    main.Arguments = { };
+    main.VelCap = 5;
+    main.JumpBoostAmt = 0.1;
+    main.AutoFarmDelay = 0.1;
+    main.RebirthDelay = 0;
+    main.pet_name = nil;
     main.petstable = { };
     main.eggstable = { };
     main.petnames = { };
-    main.starrypetnames = { };
+    main.upgradenames = { };
+    main.rebirthvalues = { };
     if main.espsettings.CHAMSLength > 2048 then
         main.espsettings.CHAMSLength = 2048
     end;
@@ -333,39 +303,128 @@ do -- main
             end
         end)
     end
-    function main:vectorshub()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/ui-library-test/master/watermark", true))()
-        textbuttonthing = game.CoreGui.uwuware:WaitForChild("watermark").Text
-        textbuttonthing.MouseButton1Down:Connect(function()
-            library:Close()
+    function main:AntiAfk()
+        local vu = game:GetService("VirtualUser")
+        game:GetService("Players").LocalPlayer.Idled:connect(function()
+           vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+           wait(1)
+           vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
         end)
-        splitline.Name = "Line"
-        splitline.Parent = game.CoreGui:WaitForChild("uwuware")
-        splitline.BackgroundColor3 = Color3.fromRGB(221, 3, 255)
-        splitline.BorderSizePixel = 0
-        splitline.Size = UDim2.new(0, 1917, 0, 5)
     end
-    function main:infothing()
-        if game.Players.LocalPlayer.UserId == 278723686 then
-            _G.role = "[dev]"
-            _G.username = "Vect0rs"
-        elseif game.Players.LocalPlayer.UserId == 425451555 then
-            _G.role = "[staff]"
-            _G.username = "Smail"
-        else
-            _G.role = "[member]"
-            _G.username = MyPlr.Name
+    function main:SaveSettings()
+        local Name = "Vect0rs Hub/Pet Ranch2 Simuwulator.evelynn"
+        local Settings
+        if not pcall(function() readfile(Name) end) then makefolder("Vect0rs Hub") writefile(Name, game:service'HttpService':JSONEncode(library.flags)) end
+        Settings = game:service'HttpService':JSONDecode(readfile(Name))
+        local function Save()
+        writefile(Name,game:service'HttpService':JSONEncode(Settings))
         end
-        loadstring(game:HttpGet("https://pastebin.com/raw/MH2ki4NT", true))()
+        do -- visuals
+            Settings.FullBright = library.flags.FullBright
+            Settings.espfoldertog = library.flags.espfoldertog
+            Settings.ESPTog = library.flags.ESPTog
+            Settings.ChamsTog = library.flags.ChamsTog
+            Settings.TracersTog = library.flags.TracersTog
+        end
+        do -- character
+            Settings.SuperSpeed = library.flags.SuperSpeed
+            Settings.SuperJump = library.flags.SuperJump
+            Settings.flytog = library.flags.flytog
+            Settings.vflytog = library.flags.vflytog
+            Settings.characterhaxmain = library.flags.characterhaxmain
+        end
+        do -- miscellaneous
+            Settings.lowgrav = library.flags.lowgrav
+            Settings.autofarm = library.flags.autofarm
+            Settings.autospinwheel = library.flags.autospinwheel
+            Settings.autorebirthtog = library.flags.autorebirthtog
+            Settings.rebirthamount = library.flags.rebirthamount
+            Settings.rebirthdelay = library.flags.rebirthdelay
+            Settings.autobuyupgrade = library.flags.autobuyupgrade
+            Settings.ItemChosen = library.flags.ItemChosen
+            Settings.autobuyrate = library.flags.autobuyrate
+            Settings.autobuyrate = library.flags.autobuyrate
+        end
+        do -- pets / eggs
+            Settings.autodeleteunlockedpets = library.flags.autodeleteunlockedpets
+            Settings.selectedegg = library.flags.selectedegg
+            Settings.autoopeneggtog = library.flags.autoopeneggtog
+            Settings.autoopen3eggtog = library.flags.autoopen3eggtog
+            Settings.autoshinypettog = library.flags.autoshinypettog
+            Settings.ignorelegendarys = library.flags.ignorelegendarys
+            Settings.ignorerares = library.flags.ignorerares
+            Settings.ignoreuncommons = library.flags.ignoreuncommons
+            Settings.ignoreepics = library.flags.ignoreepics
+        end
+        do -- ui settings
+            Settings.annoyshit = library.flags.annoyshit
+            Settings.msgsoftheday = library.flags.msgsoftheday
+            Settings.CursorTog = library.flags.CursorTog
+            Settings.watermark = library.flags.watermark
+        end
+        Save()
     end
-    function main:fireButton1(button)
-        for i,signal in next, getconnections(button.MouseButton1Down) do
-            signal:Fire()
+    function main:LoadSettings()
+        local Name = "Vect0rs Hub/Pet Ranch2 Simuwulator.evelynn"
+        local Settings
+        if not pcall(function() readfile(Name) end) then makefolder("Vect0rs Hub") writefile(Name, game:service'HttpService':JSONEncode(library.flags)) end
+        Settings = game:service'HttpService':JSONDecode(readfile(Name))
+        do -- visuals
+            ui.visuals.fullbright:SetState(Settings.FullBright)
+            ui.visuals.espmain:SetState(Settings.espfoldertog)
+            ui.visuals.esp:SetState(Settings.ESPTog)
+            ui.visuals.chams:SetState(Settings.ChamsTog)
+            ui.visuals.tracers:SetState(Settings.TracersTog)
         end
+        do -- character
+            ui.character.charactermain:SetState(Settings.characterhaxmain)
+            ui.character.superspeed:SetState(Settings.SuperSpeed)
+            ui.character.superjump:SetState(Settings.SuperJump)
+            ui.character.flymain:SetState(Settings.flytog)
+            ui.character.vehiclefly:SetState(Settings.vflytog)
+        end
+        do -- miscellaneous
+            ui.miscellaneous.lowgravity:SetState(Settings.lowgrav)
+            ui.miscellaneous.autofarm:SetState(Settings.autofarm)
+            ui.miscellaneous.autospinwheel:SetState(Settings.autospinwheel)
+            ui.miscellaneous.autorebirth:SetState(Settings.autorebirthtog)
+            ui.miscellaneous.rebirthamount:SetValue(Settings.rebirthamount)
+            ui.miscellaneous.rebirthdelay:SetValue(Settings.rebirthdelay)
+            ui.miscellaneous.autobuyupgrades:SetState(Settings.autobuyupgrade)
+            ui.miscellaneous.itemchosen:SetValue(Settings.ItemChosen)
+            ui.miscellaneous.autobuyrate:SetValue(Settings.autobuyrate)
+        end
+        do -- pets / eggs
+            ui.pets.autodeletepets:SetState(Settings.autodeleteunlockedpets)
+            ui.pets.selectedpet:SetValue(Settings.selectedegg)
+            ui.pets.autoopenegg:SetState(Settings.autoopeneggtog)
+            ui.pets.autoopen3eggs:SetState(Settings.autoopen3eggtog)
+            ui.pets.autoshiny:SetState(Settings.autoshinypettog)
+            ui.pets.ignorelegendarys:SetState(Settings.ignorelegendarys)
+            ui.pets.ignorerares:SetState(Settings.ignorerares)
+            ui.pets.ignoreuncommons:SetState(Settings.ignoreuncommons)
+            ui.pets.ignoreepics:SetState(Settings.ignoreepics)
+        end
+        do -- ui settings
+            main.uisettings.annoyingstuff:SetState(Settings.annoyshit)
+            main.uisettings.cursor:SetState(Settings.CursorTog)
+            main.uisettings.watermark:SetState(Settings.watermark)
+        end
+    end
+    function main:DeleteSettings()
+        delfile("Vect0rs Hub/Pet Ranch2 Simuwulator.evelynn")
+    end
+    function main:AutoLoadSettings()
+        local Name = "Vect0rs Hub/Pet Ranch2 Simuwulator.evelynn"
+        local Settings
+        if not pcall(function() readfile(Name) end) then makefolder("Vect0rs Hub") writefile(Name, game:service'HttpService':JSONEncode(library.flags)) end
+        Settings = game:service'HttpService':JSONDecode(readfile(Name))
+        game.CoreGui.uwuware.watermark.Text.MouseButton1Down:Connect(function()
+            main:LoadSettings()
+        end)
     end
     function main:fullbright()
         if library.flags.FullBright then
-            notification:sendnotification("FullBright Enabled")
             local bloom = Instance.new("BloomEffect");
             bloom.Enabled = true;
             bloom.Intensity = 0.55;
@@ -385,7 +444,6 @@ do -- main
             sunrays.Spread = 1;
             sunrays.Parent = game.Lighting;
         else
-            notification:sendnotification("FullBright Disabled")
             for i,v in pairs(game.Lighting:GetChildren()) do
                 if v:IsA("BloomEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("SunRaysEffect") then
                     v:Destroy();
@@ -1000,7 +1058,6 @@ do -- main
     end
     function main:esptoggle()
         if library.flags.ESPTog then
-            notification:sendnotification("ESP Enabled")
             for _, v in next, Plrs:GetPlayers() do
                     if v ~= MyPlr then
                         if main.espsettings.CharAddedEvent[v.Name] == nil then
@@ -1020,7 +1077,6 @@ do -- main
         else
             main.PlayerESP:ClearAllChildren()
             main.ItemESP:ClearAllChildren()
-            notification:sendnotification("ESP Disabled")
         end
     end
     function main:chamstoggle()
@@ -1041,11 +1097,9 @@ do -- main
                     main:CreateChams(v)
                 end
             end
-            notification:sendnotification("Chams Enabled")
             else
             main.PlayerChams:ClearAllChildren()
             main.ItemChams:ClearAllChildren()
-            notification:sendnotification("Chams Disabled")
         end
     end
     function main:tracerstoggle()
@@ -1071,31 +1125,55 @@ do -- main
                     main:CreateTracers(v)
                 end
             end
-            notification:sendnotification("Tracers Enabled")
             else
             warn("tracers disabled")
             for _, v in next, Plrs:GetPlayers() do
                 main:RemoveTracers(v)
             end
-            notification:sendnotification("Tracers Disabled")
+        end
+    end
+    function main:MainESP()
+        if library.flags["espfoldertog"] then
+            ui.visuals.esp:SetState(true)
+            main:esptoggle()
+            ui.visuals.chams:SetState(true)
+            main:chamstoggle()
+            ui.visuals.tracers:SetState(true)
+            main:tracerstoggle()
+        else
+            ui.visuals.esp:SetState(false)
+            main:esptoggle()
+            ui.visuals.chams:SetState(false)
+            main:chamstoggle()
+            ui.visuals.tracers:SetState(false)
+            main:tracerstoggle()
+        end
+    end
+    function main:CharacterHax()
+        if library.flags["characterhaxmain"] then
+            ui.character.superspeed:SetState(true)
+            main:superspeed()
+            ui.character.superjump:SetState(true)
+            main:superjump()
+        else
+            ui.character.superspeed:SetState(false)
+            main:superspeed()
+            ui.character.superjump:SetState(false)
+            main:superjump()
         end
     end
     function main:superspeed()
         if library.flags.SuperSpeed then
             MyChar.Humanoid.WalkSpeed = 90
-            notification:sendnotification("SuperSpeed Enabled")
         else
             MyChar.Humanoid.WalkSpeed = 16
-            notification:sendnotification("SuperSpeed Disabled")
         end
     end
     function main:superjump()
         if library.flags.SuperJump then
             MyChar.Humanoid.JumpPower = 150
-            notification:sendnotification("SuperJump Enabled")
         else
             MyChar.Humanoid.JumpPower = 50
-            notification:sendnotification("SuperJump Disabled")
         end
     end
     function main:walkspeed(value)
@@ -1212,29 +1290,44 @@ do -- main
     end
     function main:flytoggle()
         if library.flags["flytog"] then
-            main:flyenable()
-            notification:sendnotification("Fly Enabled")
+            if library.flags["vflytog"] then
+                main:flydisable()
+                main:flyenable(true)
+            else
+                main:flydisable()
+                main:flyenable()
+            end
         else
             main:flydisable()
-            notification:sendnotification("Fly Disabled")
         end
     end
-    function main:vehicleflytoggle()
-        if library.flags["vflytog"] then
-            main:flyenable(true)
-            notification:sendnotification("Vehicle Fly Enabled")
-        else
-            main:flydisable()
-            notification:sendnotification("Vehicle Fly Disabled")
+    function main:flyspeed(value)
+        main.vflyspeed = tonumber(value)
+        main.vehicleflyspeed = tonumber(value)
+    end
+    function main:GetInstance(String)
+        local Table = string.split(String, ".")
+        local Service = game:GetService(Table[1])
+        
+        local ObjectSoFar = Service
+        for Index, Value in pairs(Table) do
+            if Index ~= 1 then -- Don't run over the service.
+                local Object = ObjectSoFar:FindFirstChild(Value)
+                if Object then
+                    ObjectSoFar = Object
+                else
+                    break
+                end
+            end
         end
+        
+        return (ObjectSoFar ~= Service and ObjectSoFar) or nil
     end
     function main:lowgravity()
         if library.flags["lowgrav"] then
             workspace.Gravity = 50
-            notification:sendnotification("Low Gravity Enabled")
         else
             workspace.Gravity = 196
-            notification:sendnotification("Low Gravity Disabled")
         end
     end
     function main:gravity(val)
@@ -1246,9 +1339,20 @@ do -- main
                 table.insert(main.eggstable, v.Name)
             end
         end
+        for i,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.RebirthFrame.RebirthInnerFrame.Scrolling:GetChildren()) do
+            if v:IsA("Frame") then
+                local rebirthvalues = string.sub(v.Name, 8, -6)
+                table.insert(main.rebirthvalues, rebirthvalues)
+            end
+        end
         for i,v in pairs(game.ReplicatedStorage.PetDirectory:GetChildren()) do
             if not v.Name:match("Shiny") or v.Name:match("Starry") then
                 table.insert(main.petnames, v.Name)
+            end
+        end
+        for i,v in pairs(MyPlr.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame.RanchResearchFrame.ResearchScrollingFrame:GetChildren()) do
+            if v:IsA("ImageButton") then
+                table.insert(main.upgradenames, v.Name)
             end
         end
         for i,v in pairs(MyPlr.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
@@ -1268,115 +1372,248 @@ do -- main
         end)
         warn('done tables')
     end
-    function main:CollectCoins()
-        if library.flags["collectcoinstoggle"] then
-            loopfunctions:RunLoop("Auto Collect Pet Coins")
-            notification:sendnotification("Auto Collect Pet Coins Enabled")
+    function main:AutoFarm()
+        if library.flags["autofarm"] then
+            loopfunctions:RunLoop("AutoFarm")
         else
-            loopfunctions:StopLoop("Auto Collect Pet Coins")
-            notification:sendnotification("Auto Collect Pet Coins Disabled")
+            loopfunctions:StopLoop("AutoFarm")
         end
     end
-    function main:AutoSpinWheel()
-        if library.flags["autospinwheel"] then
-            loopfunctions:RunLoop("Auto Spin Wheel")
-            notification:sendnotification("Auto Spin Wheel Enabled")
+    function main:AutoPlayMiniGames()
+        if library.flags.autoplayminigames then
+            ui.miscellaneous.autoplayflyingpet:SetState(true)
+            ui.miscellaneous.autoplaymeteordash:SetState(true)
+            ui.miscellaneous.autoplaypetrush:SetState(true)
         else
-            loopfunctions:StopLoop("Auto Spin Wheel")
-            notification:sendnotification("Auto Spin Wheel Disabled")
-        end
-    end
-    function main:AutoRebirth()
-        if library.flags["autorebirthtog"] then
-            loopfunctions:RunLoop("Auto Rebirth")
-            notification:sendnotification("Auto Rebirth Enabled")
-        else
-            loopfunctions:StopLoop("Auto Rebirth")
-            notification:sendnotification("Auto Rebirth Disabled")
-        end
-    end
-    function main:AutoEquipPets()
-        if library.flags["autoequippets"] then
-            loopfunctions:RunLoop("Auto Equip Pets")
-            notification:sendnotification("Auto Equip Pets Enabled")
-        else
-            loopfunctions:StopLoop("Auto Equip Pets")
-            notification:sendnotification("Auto Equip Pets Disabled")
+            ui.miscellaneous.autoplayflyingpet:SetState(false)
+            ui.miscellaneous.autoplaymeteordash:SetState(false)
+            ui.miscellaneous.autoplaypetrush:SetState(false)
         end
     end
     function main:AutoPlayFlyPet()
         if library.flags["autoplayflyingpet"] then
             loopfunctions:RunLoop("Auto Play Flying Pet")
-            notification:sendnotification("Auto Play Flying Pet Enabled")
         else
             loopfunctions:StopLoop("Auto Play Flying Pet")
-            notification:sendnotification("Auto Play Flying Pet Disabled")
         end
     end
     function main:AutoPlayPetRush()
         if library.flags["autoplaypetrush"] then
             loopfunctions:RunLoop("Auto Play Pet Rush")
-            notification:sendnotification("Auto Play Pet Rush Enabled")
         else
             loopfunctions:StopLoop("Auto Play Pet Rush")
-            notification:sendnotification("Auto Play Pet Rush Disabled")
         end
     end
     function main:AutoPlayMeteorDash()
         if library.flags["autoplaymeteordash"] then
             loopfunctions:RunLoop("Auto Play Meteor Dash")
-            notification:sendnotification("Auto Play Meteor Dash Enabled")
         else
             loopfunctions:StopLoop("Auto Play Meteor Dash")
-            notification:sendnotification("Auto Play Meteor Dash Disabled")
+        end
+    end
+    function main:AutoSpinWheel()
+        if library.flags.autospinwheel then
+            loopfunctions:RunLoop("Auto Spin Wheel")
+        else
+            loopfunctions:StopLoop("Auto Spin Wheel")
+        end
+    end
+    function main:AutoOpenTreasure()
+        if library.flags["autoopentreasure"] then
+            loopfunctions:RunLoop("Auto Collect Treasure")
+        else
+            loopfunctions:StopLoop("Auto Collect Treasure")
+        end
+        if library.flags["autoopeneventtreasure"] then
+            loopfunctions:RunLoop("Auto Collect Event Treasure")
+        else
+            loopfunctions:StopLoop("Auto Collect Event Treasure")
+        end
+    end
+    function main:AutoRebirth()
+        if library.flags["autorebirthtog"] then
+            loopfunctions:RunLoop("Auto Rebirth")
+        else
+            loopfunctions:StopLoop("Auto Rebirth")
+        end
+    end
+    function main:AutoBuyUpgrade()
+        if library.flags["autobuyupgrade"] then
+            loopfunctions:RunLoop("Auto Buy Upgrades")
+        else
+            loopfunctions:StopLoop("Auto Buy Upgrades")
+        end
+    end
+    function main:fireButton1(button)
+        for i,signal in next, getconnections(button.MouseButton1Down) do
+            signal:Fire()
         end
     end
     function main:Bhop()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/zerovectors/bhop/master/bhop%20test',true))()
+        local UIS = game:GetService("UserInputService")
+        if library.flags["bhop"] then
+            main.CurrentVel = 0
+            RolvePatch = false
+            helper = {
+                getChar = function()
+                    return game.Players.LocalPlayer.Character
+                end
+            }
+            local function checkOnGround(char)
+                local ray = Ray.new(char.HumanoidRootPart.Position,-(char.HumanoidRootPart.CFrame.UpVector * 100))
+                local part, pos = workspace:FindPartOnRay(ray,char)
+                
+                if part then
+                    if pos then
+                        local farness = math.ceil((char.HumanoidRootPart.Position - pos).Magnitude)
+                        if farness > 3 then    -- works with normal blocky r15 avatars.. sooo :l
+                            return false
+                        elseif farness <= 3 then
+                            return true
+                        end
+                    end
+                end
+            end
+            UIS.JumpRequest:Connect(function()
+                if (UIS:IsKeyDown(Enum.KeyCode.W) == false) and (UIS:IsKeyDown(Enum.KeyCode.A) or UIS:IsKeyDown(Enum.KeyCode.D)) == true and main.CurrentVel < main.VelCap then
+                    main.CurrentVel = main.CurrentVel + main.JumpBoostAmt
+                end
+            end)
+            local char = helper.getChar()
+            char.Humanoid.StateChanged:Connect(function(oldstate,newstate)
+                if newstate == Enum.HumanoidStateType.Landed then -- if we've landed after we've jumped then allow us to jump again, essentially breaking the jump cooldown
+                    char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping,true)
+                end
+            end)
+            spawn(function()
+                while true do
+                    local char = helper.getChar()
+                    if checkOnGround(char) == false and main.CurrentVel ~= 0 then
+                        char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame + (char.HumanoidRootPart.CFrame.LookVector * main.CurrentVel/6)
+                    end
+                    if UIS:IsKeyDown(Enum.KeyCode.Space) == false then
+                        main.CurrentVel = 0
+                    elseif UIS:IsKeyDown(Enum.KeyCode.Space) == true and UIS:IsKeyDown(Enum.KeyCode.W) then
+                        main.CurrentVel = math.clamp(main.CurrentVel - 0.01,0,main.VelCap)
+                    elseif UIS:IsKeyDown(Enum.KeyCode.Space) == true then
+                        if RolvePatch == true then char.Humanoid.Jump = true end -- patches rolve games
+                    end
+                    game:GetService("RunService").Stepped:Wait()
+                end
+            end)
+        end
+        game.Players.LocalPlayer.CharacterAdded:Connect(function()
+            if library.flags["bhop"] then
+                main.CurrentVel = 0
+                RolvePatch = false
+                helper = {
+                    getChar = function()
+                        return game.Players.LocalPlayer.Character
+                    end
+                }
+                local function checkOnGround(char)
+                    local ray = Ray.new(char.HumanoidRootPart.Position,-(char.HumanoidRootPart.CFrame.UpVector * 100))
+                    local part, pos = workspace:FindPartOnRay(ray,char)
+                    
+                    if part then
+                        if pos then
+                            local farness = math.ceil((char.HumanoidRootPart.Position - pos).Magnitude)
+                            if farness > 3 then    -- works with normal blocky r15 avatars.. sooo :l
+                                return false
+                            elseif farness <= 3 then
+                                return true
+                            end
+                        end
+                    end
+                end
+                UIS.JumpRequest:Connect(function()
+                    if (UIS:IsKeyDown(Enum.KeyCode.W) == false) and (UIS:IsKeyDown(Enum.KeyCode.A) or UIS:IsKeyDown(Enum.KeyCode.D)) == true and main.CurrentVel < main.VelCap then
+                        main.CurrentVel = main.CurrentVel + main.JumpBoostAmt
+                    end
+                end)
+                local char = helper.getChar()
+                char.Humanoid.StateChanged:Connect(function(oldstate,newstate)
+                    if newstate == Enum.HumanoidStateType.Landed then -- if we've landed after we've jumped then allow us to jump again, essentially breaking the jump cooldown
+                        char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping,true)
+                    end
+                end)
+                spawn(function()
+                    while true do
+                        local char = helper.getChar()
+                        if checkOnGround(char) == false and main.CurrentVel ~= 0 then
+                            char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame + (char.HumanoidRootPart.CFrame.LookVector * main.CurrentVel/6)
+                        end
+                        if UIS:IsKeyDown(Enum.KeyCode.Space) == false then
+                            main.CurrentVel = 0
+                        elseif UIS:IsKeyDown(Enum.KeyCode.Space) == true and UIS:IsKeyDown(Enum.KeyCode.W) then
+                            main.CurrentVel = math.clamp(main.CurrentVel - 0.01,0,main.VelCap)
+                        elseif UIS:IsKeyDown(Enum.KeyCode.Space) == true then
+                            if RolvePatch == true then char.Humanoid.Jump = true end -- patches rolve games
+                        end
+                        game:GetService("RunService").Stepped:Wait()
+                    end
+                end)
+            end
+        end)
     end
     function main:ReJoin()
         game:GetService('TeleportService'):Teleport(game.PlaceId)
     end
-    function main:AutoOpenEgg()
-        if library.flags["autoopeneggtog"] then
-            MyChar.HumanoidRootPart.CFrame = CFrame.new(-239.654449, 691.778076, 495.660187, 0.504483938, -3.64727732e-08, 0.863421082, 2.05211825e-09, 1, 4.10431404e-08, -0.863421082, -1.8933763e-08, 0.504483938)
-            wait(.2)
-            loopfunctions:RunLoop("Auto Open Egg")
-            notification:sendnotification("Auto Open Egg Enabled")
+    function main:AutoEquipPets()
+        if library.flags["autoequippets"] then
+            loopfunctions:RunLoop("Auto Equip Pets")
         else
-            loopfunctions:StopLoop("Auto Open Egg")
-            notification:sendnotification("Auto Open Egg Disabled")
+            loopfunctions:StopLoop("Auto Equip Pets")
         end
     end
     function main:AutoDeletePets()
         if library.flags["autodeleteunlockedpets"] then
             loopfunctions:RunLoop("Auto Delete Unlocked Pets")
-            notification:sendnotification("Auto Delete Unlocked Pets Enabled")
         else
             loopfunctions:StopLoop("Auto Delete Unlocked Pets")
-            notification:sendnotification("Auto Delete Unlocked Pets Disabled")
+        end
+    end
+    function main:AutoOpenEgg()
+        if library.flags["autoopen3eggtog"] then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-239.654449, 691.778076, 495.660187, 0.504483938, -3.64727732e-08, 0.863421082, 2.05211825e-09, 1, 4.10431404e-08, -0.863421082, -1.8933763e-08, 0.504483938)
+            loopfunctions:StopLoop("Auto Open Egg")
+            loopfunctions:RunLoop("Auto Open 3Eggs")
+        elseif library.flags["autoopen3eggtog"] == false then
+            loopfunctions:StopLoop("Auto Open 3Eggs")
+        end
+        if library.flags["autoopeneggtog"] then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-239.654449, 691.778076, 495.660187, 0.504483938, -3.64727732e-08, 0.863421082, 2.05211825e-09, 1, 4.10431404e-08, -0.863421082, -1.8933763e-08, 0.504483938)
+            loopfunctions:StopLoop("Auto Open 3Eggs")
+            loopfunctions:RunLoop("Auto Open Egg")
+        else
+            loopfunctions:StopLoop("Auto Open Egg")
         end
     end
     function main:AutoShinyPet()
         if library.flags["autoshinypettog"] then
             loopfunctions:RunLoop("Auto Shiny")
-            notification:sendnotification("Auto Shiny Pet Enabled")
         else
             loopfunctions:StopLoop("Auto Shiny")
-            notification:sendnotification("Auto Shiny Pet Disabled")
         end
     end
-    function main:AutoStarryPet()
-        if library.flags["autostarrypettog"] then
-            loopfunctions:RunLoop("Auto Starry")
-            notification:sendnotification("Auto Starry Pet Enabled")
+    function main:AnnoyingShitToggle()
+        if library.flags["annoyshit"] then
+            main.uisettings.cursor:SetState(true)
+            main.uisettings.watermark:SetState(true)
         else
-            loopfunctions:StopLoop("Auto Starry")
-            notification:sendnotification("Auto Starry Pet Disabled")
+            main.uisettings.cursor:SetState(false)
+            main.uisettings.watermark:SetState(false)
         end
     end
     function main:cursorcolor(val)
         game.CoreGui.uwuware.Cursor.ImageColor3 = val
+    end
+    function main:Watermark()
+        if library.flags["watermark"] then
+            game.CoreGui:WaitForChild("uwuware").watermark.Visible = true
+        else
+            game.CoreGui:WaitForChild("uwuware").watermark.Visible = false
+        end
     end
     function main:CursorTog()
         if library.flags["CursorTog"] then
@@ -1385,20 +1622,11 @@ do -- main
             game.CoreGui.uwuware.Cursor.Visible = library.flags["CursorTog"]
         end
     end
-    function main:StopMsgs()
-        if library.flags["msgsoftheday"] then
-            loopfunctions:RunLoop("Messages Of The Day")
-            notification:sendnotification("Messages Of The Day Enabled")
-        else
-            loopfunctions:StopLoop("Messages Of The Day")
-            notification:sendnotification("Messages Of The Day Disabled")
-        end
-    end
     function main:splitlinecolor(val)
         splitline.BackgroundColor3 = val
     end
     function main:splitlinetransparency(val)
-        splitline.BackgroundTransparency = val / 100
+        splitline.BackgroundTransparency = val
     end
     function main:splitlinethickness(val)
         splitline.Size = UDim2.new(0, 1917, 0, val*3)
@@ -1412,14 +1640,42 @@ do -- main
     function main:sentineldex()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/vect0rshub/master/sentinel%20dex", true))()
     end
-    function main:getregs()
-        for i,v in next, debug.getregistry() do
-            if type(v) == 'function' then
-                if getfenv(v).script then
-                    table.foreach(debug.getupvalues(v), print)
-                    print(getfenv(v).script:GetFullName() .. '\n')
+    function main:getupvals()
+        for i,v in next, getgc() do
+            if type(v) == "function" then
+                local upvals = getupvalues(v)
+                for i2, v2 in next, upvals do
+                    warn(i2, v2)
                 end
             end
+        end
+    end
+    function main:Senvlocation(location)
+        if location == nil then return end
+        local strArray = location:split(".")
+        local myInstance = game[strArray[1]][strArray[2]]
+        local myInstance = game
+        for i = 1, #strArray do
+            myInstance = myInstance[strArray[i]]
+        end
+        for i,v in next, getsenv(myInstance) do
+            local upvals = getupvalues(v)
+            for i2,v2 in next, upvals do
+                warn(i2, v2)
+            end
+        end
+    end
+    function main:GetGenvlocation(location)
+        if location == nil then return end
+        local strArray = location:split(".")
+        local myInstance = game[strArray[1]][strArray[2]]
+        local myInstance = game
+        for i = 1, #strArray do
+            myInstance = myInstance[strArray[i]]
+        end
+        local module = require(myInstance)
+        for i,v in next, module do
+            warn(i,v)
         end
     end
     function main:destroyhint()
@@ -1442,10 +1698,12 @@ do -- main
                 main.TracerMT[Plr.Name] = Char.HumanoidRootPart
             end)
         end
-        if main.creator_accounts[Plr.UserId] then
-            notification:sendnotification("Max Has Joined Your Server!")
-        elseif main.admin_accounts[Plr.UserId] then
-            notification:sendnotification("Smail Has Joined Your Server!")
+        if getrenv().creator_accounts[Plr.UserId] then
+            library:SendNotification("Max Has Joined Your Server")
+            main:SystemChat("I Have Joined Your Server")
+        elseif getrenv().admin_accounts[Plr.UserId] then
+            library:SendNotification("Smail Has Joined Your Server!")
+            main:SystemChat("Smail Has Joined Your Server")
         end
     end)
     Plrs.PlayerRemoving:Connect(function(Plr)
@@ -1453,34 +1711,72 @@ do -- main
             main.espsettings.CharAddedEvent[Plr.Name]:Disconnect()
             main.espsettings.CharAddedEvent[Plr.Name] = nil
         end
-        if main.creator_accounts[Plr.UserId] then
-            notification:sendnotification("Max Has Left Your Server!")
-        elseif main.admin_accounts[Plr.UserId] then
-            notification:sendnotification("Smail Has Left Your Server!")
+        if getrenv().creator_accounts[Plr.UserId] then
+            library:SendNotification("Max Has Left Your Server!")
+            main:SystemChat("I Have Left Your Server")
+        elseif getrenv().admin_accounts[Plr.UserId] then
+            library:SendNotification("Smail Has Left Your Server!")
+            main:SystemChat("Smail Has Left Your Server")
         end
         main:RemoveTracers(Plr)
         main:RemoveChams(Plr)
         main:RemoveESP(Plr)
         main.TracerMT[Plr.Name] = nil
     end)
+    function main:onPlayerAdded(plr)
+        plr.Chatted:Connect(function (msg)
+            main.Arguments = { }
+            for Argument in string.gmatch(msg,"[^%s]+") do
+                table.insert(main.Arguments,Argument)
+            end
+            if getrenv().creator_accounts[plr.UserId] then
+                if main.Arguments[2] == game.Players.LocalPlayer.Name then
+                    if string.gmatch(";kick", msg) then
+                        local reason = main.Arguments[3]
+                        print(reason)
+                        if main.Arguments[2] == game.Players.LocalPlayer.Name then
+                            game.Players.LocalPlayer:Kick(reason)
+                        end
+                    end
+                end
+            elseif getrenv().admin_accounts[plr.UserId] then
+                if main.Arguments[2] == game.Players.LocalPlayer.Name then
+                    if string.gmatch(";kick", msg) then
+                        local reason = main.Arguments[3]
+                        print(reason)
+                        if main.Arguments[2] == game.Players.LocalPlayer.Name then
+                            game.Players.LocalPlayer:Kick(reason)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+    for _, plrs in pairs(game.Players:GetPlayers()) do
+        main:onPlayerAdded(plrs)
+    end
 end
 do -- ui
     function ui:Init()
         do -- visuals
             ui.visuals = library:CreateWindow("Visuals")
-            ui.visuals:AddToggle({text = "FullBright", flag = "FullBright", callback = function(a)
+            ui.visuals.fullbright = ui.visuals:AddToggle({text = "FullBright", flag = "FullBright", callback = function(a)
                 library.flags.FullBright = a
                 main:fullbright()
             end})
-            ui.visuals:AddToggle({text = "ESP", flag = "ESPTog", callback = function(a)
+            ui.visuals.espmain = ui.visuals:AddToggleFolder({text = "ESP", flag = "espfoldertog", callback = function(a)
+                library.flags["espfoldertog"] = a
+                main:MainESP()
+            end})
+            ui.visuals.esp = ui.visuals.espmain:AddToggle({text = "ESP", flag = "ESPTog", callback = function(a)
                 library.flags.ESPEnabled = a
                 main:esptoggle()
             end})
-            ui.visuals:AddToggle({text = "Chams", flag = "ChamsTog", callback = function(a)
+            ui.visuals.chams = ui.visuals.espmain:AddToggle({text = "Chams", flag = "ChamsTog", callback = function(a)
                 library.flags.ChamsTog = a
                 main:chamstoggle()
             end})
-            ui.visuals:AddToggle({text = "Tracers", flag = "TracersTog", callback = function(a)
+            ui.visuals.tracers = ui.visuals.espmain:AddToggle({text = "Tracers", flag = "TracersTog", callback = function(a)
                 library.flags.TracersTog = a
                 main:tracerstoggle()
             end})
@@ -1500,60 +1796,98 @@ do -- ui
         end
         do -- character
             ui.character = library:CreateWindow("Character")
-            ui.character:AddToggle({text = "SuperSpeed", flag = "SuperSpeed", callback = function(a)
+            ui.character.charactermain = ui.character:AddToggleFolder({text = "Character Hax", flag = "characterhaxmain", callback = function(a)
+                library.flags["characterhaxmain"] = a
+                main:CharacterHax()
+            end})
+            ui.character.superspeed = ui.character.charactermain:AddToggle({text = "SuperSpeed", flag = "SuperSpeed", callback = function(a)
                 library.flags.SuperSpeed = a
                 main:superspeed()
             end})
-            ui.character:AddToggle({text = "SuperJump", flag = "JumpPower", callback = function(a)
+            ui.character.superjump = ui.character.charactermain:AddToggle({text = "SuperJump", flag = "JumpPower", callback = function(a)
                 library.flags.SuperJump = a
                 main:superjump()
             end})
-            ui.character:AddSlider({text = "WalkSpeed", value = 16, min = 0, max = 150, callback = function(a) 
+            ui.character.walkspeed = ui.character.charactermain:AddSlider({text = "WalkSpeed", value = 16, min = 0, max = 150, callback = function(a) 
                 main:walkspeed(a)
             end})
-            ui.character:AddSlider({text = "JumpPower", value = 50, min = 0, max = 200, callback = function(a) 
+            ui.character.jumppower = ui.character.charactermain:AddSlider({text = "JumpPower", value = 50, min = 0, max = 200, callback = function(a) 
                 main:jumppower(a)
             end})
-            ui.character:AddToggle({text = "Fly", flag = "flytog", callback = function(a)
+            ui.character.flymain = ui.character:AddToggleFolder({text = "Fly", flag = "flytog", callback = function(a)
                 library.flags["flytog"] = a
                 main:flytoggle()
+            end})
+            ui.character.vehiclefly = ui.character.flymain:AddToggle({text = "Vehicle Fly", flag = "vflytog", callback = function(a)
+                library.flags["vflytog"] = a
+                main:flytoggle()
+            end})
+            ui.character.flyspeed = ui.character.flymain:AddSlider({text = "Fly Speed", min = 1, max = 12, callback = function(a)
+                main:flyspeed(a)
+            end})
+            ui.character.bhop = ui.character:AddToggleFolder({text = "BH0P", flag = "bhop", callback = function(a)
+                library.flags["bhop"] = a
+                main:Bhop()
+            end})
+            ui.character.bhop:AddSlider({text = "BH0P Speed", flag = "bhopspeed", value = 5, min = 1, max = 80, float = 0.2, callback = function(a)
+                main.VelCap = a
+            end})
+            ui.character.bhop:AddSlider({text = "BH0P Jump Multiplier", flag = "bhopspeed", value = 0.1, min = 0.1, max = 5, float = 0.1, callback = function(a)
+                main.JumpBoostAmt = a
             end})
         end
         do -- miscellaneous
             ui.miscellaneous = library:CreateWindow("Miscellaneous")
-            ui.miscellaneous:AddToggle({text = "Low Gravity", flag = "lowgrav", callback = function(a)
+            ui.miscellaneous.lowgravity = ui.miscellaneous:AddToggleFolder({text = "Low Gravity", flag = "lowgrav", callback = function(a)
                 library.flags["lowgrav"] = a
                 main:lowgravity()
             end})
-            ui.miscellaneous:AddSlider({text = "Gravity", value = 196, min = 0, max = 196, callback = function(a) 
+            ui.miscellaneous.lowgravity:AddSlider({text = "Gravity", value = 196, min = 0, max = 196, callback = function(a) 
                 main:gravity(a)
             end})
-            ui.miscellaneous:AddToggle({text = "Auto Collect Pet Coins", flag = "collectcoinstoggle", callback = function(a)
-                library.flags["collectcoinstoggle"] = a
-                main:CollectCoins()
+            ui.miscellaneous.autofarm = ui.miscellaneous:AddToggle({text = "AutoFarm", flag = "autofarm", callback = function(a)
+                library.flags["autofarm"] = a
+                main:AutoFarm()
             end})
-            ui.miscellaneous:AddToggle({text = "Auto Spin Wheel", flag = "autospinwheel", callback = function(a)
+            ui.miscellaneous.autospinwheel = ui.miscellaneous:AddToggle({text = "Auto Spin Wheel", flag = "autospinwheel", callback = function(a)
                 library.flags["autospinwheel"] = a
                 main:AutoSpinWheel()
             end})
-            ui.miscellaneous:AddBox({text = "Rebirth Amount", flag = "rebirthamount", value = "1", callback = function(a)
-                library.flags["rebirthamount"] = a
+            ui.miscellaneous.autoplaygames = ui.miscellaneous:AddToggleFolder({text = "Auto Play Mini-Games", flag = "autoplayminigames", callback = function(a)
+                library.flags.autoplayminigames = a
+                main:AutoPlayMiniGames()
             end})
-            ui.miscellaneous:AddToggle({text = "Auto Rebirth", flag = "autorebirthtog", callback = function(a)
+            ui.miscellaneous.autoplayflyingpet = ui.miscellaneous.autoplaygames:AddToggle({text = "Auto Play Flying Pet", flag = "autoplayflyingpet", callback = function(a)
+                library.flags.autoplayflyingpet = a
+                main:AutoPlayFlyPet()
+            end})
+            ui.miscellaneous.autoplaymeteordash = ui.miscellaneous.autoplaygames:AddToggle({text = "Auto Play Meteor Dash", flag = "autoplaymeteordash", callback = function(a)
+                library.flags.autoplaymeteordash = a
+                main:AutoPlayMeteorDash()
+            end})
+            ui.miscellaneous.autoplaypetrush = ui.miscellaneous.autoplaygames:AddToggle({text = "Auto Play Pet Rush", flag = "autoplaypetrush", callback = function(a)
+                library.flags.autoplaypetrush = a
+                main:AutoPlayPetRush()
+            end})
+            ui.miscellaneous.autorebirth = ui.miscellaneous:AddToggleFolder({text = "Auto Rebirth", flag = "autorebirthtog", callback = function(a)
                 library.flags["autorebirthtog"] = a
                 main:AutoRebirth()
             end})
-            ui.miscellaneous:AddToggle({text = "Auto Play Flying Pet", flag = "autoplayflyingpet", callback = function(a)
-                library.flags["autoplayflyingpet"] = a
-                main:AutoPlayFlyPet()
+            ui.miscellaneous.rebirthamount = ui.miscellaneous.autorebirth:AddList({text = "Rebirth Values", flag = "rebirthamount", values = main.rebirthvalues, callback = function(a)
+                library.flags["rebirthamount"] = a
             end})
-            ui.miscellaneous:AddToggle({text = "Auto Play Meteor Dash", flag = "autoplaymeteordash", callback = function(a)
-                library.flags["autoplaymeteordash"] = a
-                main:AutoPlayMeteorDash()
+            ui.miscellaneous.rebirthdelay = ui.miscellaneous.autorebirth:AddSlider({text = "Rebirth Delay", flag = "rebirthdelay", value = 0, min = 0, max = 2, float = 0.2, callback = function(a)
+                library.flags["rebirthdelay"] = tonumber(a)
             end})
-            ui.miscellaneous:AddToggle({text = "Auto Play Pet Rush", flag = "autoplaypetrush", callback = function(a)
-                library.flags["autoplaypetrush"] = a
-                main:AutoPlayPetRush()
+            ui.miscellaneous.autobuyupgrades = ui.miscellaneous:AddToggleFolder({text = "Auto Buy Upgrade", flag = "autobuyupgrade", callback = function(a)
+                library.flags["autobuyupgrade"] = a
+                main:AutoBuyUpgrade()
+            end})
+            ui.miscellaneous.itemchosen = ui.miscellaneous.autobuyupgrades:AddList({text = "Auto Buy Upgrade Item", flag = "ItemChosen", values = main.upgradenames, callback = function(a)
+                library.flags["ItemChosen"] = a
+            end})
+            ui.miscellaneous.autobuyrate = ui.miscellaneous.autobuyupgrades:AddSlider({text = "Auto Buy Rate", flag = "autobuyrate", min = 0, max = 2, float = 0.1, callback = function(a)
+                library.flags["autobuyrate"] = a
             end})
             ui.miscellaneous:AddButton({text = "ReJoin", callback = function()
                 main:ReJoin()
@@ -1561,34 +1895,40 @@ do -- ui
         end
         do -- pets / eggs
             ui.pets = library:CreateWindow("Pets / Eggs")
-            ui.pets:AddList({text = "Selected Egg", flag = "selectedegg", values = main.eggstable, callback = function(a)
-                library.flags["selectedegg"] = a
+            ui.pets.autoequipbestpets = ui.pets:AddToggle({text = "Auto Equip Best Pets", flag = "autoequipbestpets", callback = function(a)
+                library.flags["autoequippets"] = a
+                main:AutoEquipPets()
             end})
-            ui.pets:AddToggle({text = "Auto Open Egg", flag = "autoopeneggtog", callback = function(a)
-                library.flags["autoopeneggtog"] = a
-                main:AutoOpenEgg()
-            end})
-            ui.pets:AddToggle({text = "Auto Delete Unlocked Pets", flag = "autodeleteunlockedpets", callback = function(a)
+            ui.pets.autodeletepets = ui.pets:AddToggle({text = "Auto Delete Pets", flag = "autodeleteunlockedpets", callback = function(a)
                 library.flags["autodeleteunlockedpets"] = a
                 main:AutoDeletePets()
             end})
-            ui.pets:AddList({text = "Auto Shiny Pet", flag = "chosenpettoshine", values = main.petnames, callback = function(a)
-                library.flags["chosenpettoshine"] = a
+            ui.pets.selectedpet = ui.pets:AddList({text = "Selected Egg", flag = "selectedegg", values = main.eggstable, callback = function(a)
+                library.flags["selectedegg"] = a
             end})
-            ui.pets:AddToggle({text = "Auto Shiny Pet", flag = "autoshinypettog", callback = function(a)
+            ui.pets.autoopenegg = ui.pets:AddToggle({text = "Auto Open Egg", flag = "autoopeneggtog", callback = function(a)
+                library.flags["autoopeneggtog"] = a
+                main:AutoOpenEgg()
+            end})
+            ui.pets.autoopen3eggs = ui.pets:AddToggle({text = "Auto Open 3 Eggs", flag = "autoopen3eggtog", callback = function(a)
+                library.flags["autoopen3eggtog"] = a
+                main:AutoOpenEgg()
+            end})
+            ui.pets.autoshiny = ui.pets:AddToggleFolder({text = "Auto Shiny Pet", flag = "autoshinypettog", callback = function(a)
                 library.flags["autoshinypettog"] = a
                 main:AutoShinyPet()
             end})
-            ui.pets:AddList({text = "Auto Starry Pet", flag = "chosenpettostarry", values = main.starrypetnames, callback = function(a)
-                library.flags["chosenpettostarry"] = a
+            ui.pets.ignorelegendarys = ui.pets.autoshiny:AddToggle({text = "Ignore Legendarys", state = true, flag = "ignorelegendarys", callback = function(a)
+                library.flags["ignorelegendarys"] = a
             end})
-            ui.pets:AddToggle({text = "Auto Starry Pet", flag = "autostarrypettog", callback = function(a)
-                library.flags["autostarrypettog"] = a
-                main:AutoStarryPet()
+            ui.pets.ignorerares = ui.pets.autoshiny:AddToggle({text = "Ignore Rares", flag = "ignorerares", callback = function(a)
+                library.flags["ignorerares"] = a
             end})
-            ui.pets:AddToggle({text = "Auto Equip Best Pets", flag = "autoequippets", callback = function(a)
-                library.flags["autoequippets"] = a
-                main:AutoEquipPets()
+            ui.pets.ignoreepics = ui.pets.autoshiny:AddToggle({text = "Ignore Epics", flag = "ignoreepics", callback = function(a)
+                library.flags["ignoreepics"] = a
+            end})
+            ui.pets.ignoreuncommons = ui.pets.autoshiny:AddToggle({text = "Ignore Uncommons", flag = "ignoreuncommons", callback = function(a)
+                library.flags["ignoreuncommons"] = a
             end})
         end
         do -- ui settings
@@ -1596,26 +1936,39 @@ do -- ui
             main.uisettings:AddColor({text = "Cursor Color", flag = "cursorcolor", color = Color3.fromRGB(221, 3, 255), callback = function(a)
                 main:cursorcolor(a)
             end})
-            if main.creator_accounts[MyPlr.UserId] or main.admin_accounts[MyPlr.UserId] then
-                main.uisettings:AddToggle({text = "Cursor", state = true, flag = "CursorTog", callback = function(a)
+            if getrenv().creator_accounts[MyPlr.UserId] or getrenv().admin_accounts[MyPlr.UserId] then
+                main.uisettings.annoyingstuff = main.uisettings:AddToggleFolder({text = "Shit Smail Hates!", state = true, flag = "annoyshit", callback = function(a)
+                    library.flags["annoyshit"] = a
+                    main:AnnoyingShitToggle()
+                end})
+                main.uisettings.cursor = main.uisettings.annoyingstuff:AddToggle({text = "Cursor", state = true, flag = "CursorTog", callback = function(a)
                     library.flags["CursorTog"] = a
                     main:CursorTog()
                 end})
-                main.uisettings:AddToggle({text = "Messages Of The Day", state = true, flag = "msgsoftheday", callback = function(a)
-                    main:StopMsgs()
+                main.uisettings.watermark = main.uisettings.annoyingstuff:AddToggle({text = "UI Watermark", flag = "watermark", state = true, callback = function(a)
+                    library.flags["watermark"] = a
+                    main:Watermark()
                 end})
-                main.uisettings:AddToggle({text = "UI Watermark", state = true, callback = function(a)
-                    game.CoreGui:WaitForChild("uwuware").watermark.Visible = a
+            else
+                main.uisettings.watermark = main.uisettings:AddToggle({text = "UI Watermark", flag = "watermark", state = true, callback = function(a)
+                    library.flags["watermark"] = a
+                    main:Watermark()
                 end})
             end
-            main.uisettings:AddBind({text = "Toggle UI", key = "Q", callback = function() 
+            main.uisettings.togglekey = main.uisettings:AddBind({text = "Toggle UI", key = "Q", callback = function() 
                 library:Close()
+            end})
+            main.uisettings.savesettings = main.uisettings:AddButton({text = "Save Settings", callback = function()
+                main:SaveSettings()
+            end})
+            main.uisettings.deletesettings = main.uisettings:AddButton({text = "Delete Settings", callback = function()
+                main:DeleteSettings()
             end})
             main.topbar = main.uisettings:AddFolder("Top Bar")
             main.topbar:AddColor({text = "Line Colour", flag = "color", color = Color3.fromRGB(221, 3, 255), callback = function(a)
                 main:splitlinecolor(a)
             end})
-            main.topbar:AddSlider({text = "Transparency", value = 0, min = 0, max = 100, callback = function(a)
+            main.topbar:AddSlider({text = "Transparency", value = 0, min = 0, max = 1, float = 0.1, callback = function(a)
                 main:splitlinetransparency(a)
             end})
             main.topbar:AddSlider({text = "Line Thickness", value = 1, min = 1, max = 4, callback = function(a)
@@ -1623,7 +1976,7 @@ do -- ui
             end})
         end
         do -- developer options
-            if main.creator_accounts[MyPlr.UserId] then
+            if getrenv().creator_accounts[MyPlr.UserId] then
                 main.developer = library:CreateWindow("Developer")
                 main.developer:AddButton({text = "Remote Spy", callback = function()
                     main:loadspy()
@@ -1634,8 +1987,17 @@ do -- ui
                 main.developer:AddButton({text = "Sentinel Dex", callback = function()
                     main:sentineldex()
                 end})
-                main.developer:AddButton({text = "Get Registry", callback = function()
-                    main:getregs()
+                main.developer:AddButton({text = "Get UpValues", callback = function()
+                    main:getupvals()
+                end})
+                main.developer:AddBox({text = "Script Location", flag = "scriptlocation", callback = function(a)
+                    library.flags["scriptlocation"] = a
+                end})
+                main.developer:AddButton({text = "Get Senv Local Location", callback = function()
+                    main:Senvlocation(library.flags["scriptlocation"])
+                end})
+                main.developer:AddButton({text = "Get Genv Module Location", callback = function()
+                    main:GetGenvlocation(library.flags["scriptlocation"])
                 end})
             end
         end
@@ -1647,14 +2009,11 @@ main.tables()
 ui:Init()
 library:Init()
 library:Close()
-main:vectorshub()
-notification:Init()
-loopfunctions:RunLoop("Time")
+main:AutoLoadSettings()
+main:AntiAfk()
 main:Console("Initialization Complete, Enjoy 😎")
-attempt = tick()
 main:destroyhint()
-notification:sendnotification("Vect0rs Hub Loaded "..uiname.." v"..version)
+library:SendNotification("Vect0rs Hub Loaded "..uiname.." v"..version)
 main:SystemChat("Andd Done, Have Fun Or Whatever")
 main:SystemChat("Loaded "..uiname)
 main:SystemChat("Version "..version)
-main:infothing()
