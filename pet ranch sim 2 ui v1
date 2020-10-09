@@ -3,7 +3,7 @@ local hintmsg = Instance.new("Hint", game.CoreGui)
 local attempt = tick()
 hintmsg.Text = "Initializing UI Library This Can Take Up To 30 Seconds"
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/framework/master/vect0rs%20hub%20framework%20uwuware%20checkmarks", true))()
-local version = "3.2"
+local version = "3.3"
 local uiname = "Pet Ranch 2"
 local ui = { }
 local main = { }
@@ -126,29 +126,58 @@ do -- loops
         game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
     end, Run.RenderStepped)
     loopfunctions:CreateLoop("Auto Shiny", function()
-        for i,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetIndex.PetIndexInnerFrame.PetIndexScrollingFrame:GetChildren()) do
-            for i2,v2 in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
-                if v2:IsA("ImageButton") then  
-                    if v:IsA("ImageLabel") then
-                        if v.PetIndexSlotPic.PetImage.Image == v2.PetImage.Image then
-                            if library.flags.ignorelegendarys and v.PetIndexSlotPic.Rarity.Text == "Legendary" then
-                            elseif library.flags.ignorerares and v.PetIndexSlotPic.Rarity.Text == "Rare" then
-                            elseif library.flags.ignorecommons and v.PetIndexSlotPic.Rarity.Text == "Common" then
-                            elseif library.flags.ignoreuncommons and v.PetIndexSlotPic.Rarity.Text == "Uncommon" then
-                            elseif library.flags.ignoreepics and v.PetIndexSlotPic.Rarity.Text == "Epic" then
-                            else
-                                local args = {
-                                    [1] = "MakeShinyPet",
-                                    [2] = v2.Name,
-                                    [3] = v.Name,
-                                }
-                                game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
+        pcall(function()
+            for i,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetIndex.PetIndexInnerFrame.PetIndexScrollingFrame:GetChildren()) do
+                for i2,v2 in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
+                    if v2:IsA("ImageButton") then  
+                        if v:IsA("ImageLabel") then
+                            if v.PetIndexSlotPic.PetImage.Image == v2.PetImage.Image then
+                                if library.flags.ignorelegendarys and v.PetIndexSlotPic.Rarity.Text == "Legendary" then
+                                elseif library.flags.ignorerares and v.PetIndexSlotPic.Rarity.Text == "Rare" then
+                                elseif library.flags.ignorecommons and v.PetIndexSlotPic.Rarity.Text == "Common" then
+                                elseif library.flags.ignoreuncommons and v.PetIndexSlotPic.Rarity.Text == "Uncommon" then
+                                elseif library.flags.ignoreepics and v.PetIndexSlotPic.Rarity.Text == "Epic" then
+                                else
+                                    local args = {
+                                        [1] = "MakeShinyPet",
+                                        [2] = v2.Name,
+                                        [3] = v.Name,
+                                    }
+                                    game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
+                                end
                             end
                         end
                     end
                 end
             end
-        end
+        end)
+    end, Run.RenderStepped)
+    loopfunctions:CreateLoop("Auto Starry", function()
+        pcall(function()
+            for i,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetIndex.PetIndexInnerFrame.PetIndexScrollingFrame:GetChildren()) do
+                for i2,v2 in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do
+                    if v2:IsA("ImageButton") then  
+                        if v:IsA("ImageLabel") then
+                            if v.PetIndexSlotPic.PetImage.Image == v2.PetImage.Image then
+                                if library.flags.ignorelegendarys2 and v.PetIndexSlotPic.Rarity.Text == "Legendary" then
+                                elseif library.flags.ignorerares2 and v.PetIndexSlotPic.Rarity.Text == "Rare" then
+                                elseif library.flags.ignorecommons2 and v.PetIndexSlotPic.Rarity.Text == "Common" then
+                                elseif library.flags.ignoreuncommons2 and v.PetIndexSlotPic.Rarity.Text == "Uncommon" then
+                                elseif library.flags.ignoreepics2 and v.PetIndexSlotPic.Rarity.Text == "Epic" then
+                                else
+                                    local args = {
+                                        [1] = "MakeStarryPet",
+                                        [2] = v2.Name,
+                                        [3] = v.Name,
+                                    }
+                                    game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction:InvokeServer(unpack(args))
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end)
     end, Run.RenderStepped)
     loopfunctions:CreateLoop("AutoFarm", function()
         for i,v in pairs(game.Players.LocalPlayer.PlayerGui.BubbleGuis:GetDescendants()) do
@@ -241,6 +270,7 @@ do -- main
     main.petstable = { };
     main.eggstable = { };
     main.petnames = { };
+    main.shinypetnames = { };
     main.upgradenames = { };
     main.rebirthvalues = { };
     if main.espsettings.CHAMSLength > 2048 then
@@ -1350,6 +1380,11 @@ do -- main
                 table.insert(main.petnames, v.Name)
             end
         end
+        for i,v in pairs(game.ReplicatedStorage.PetDirectory:GetChildren()) do
+            if v.Name:match("Shiny") then
+                table.insert(main.shinypetnames, v.Name)
+            end
+        end
         for i,v in pairs(MyPlr.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame.RanchResearchFrame.ResearchScrollingFrame:GetChildren()) do
             if v:IsA("ImageButton") then
                 table.insert(main.upgradenames, v.Name)
@@ -1592,6 +1627,13 @@ do -- main
             loopfunctions:RunLoop("Auto Shiny")
         else
             loopfunctions:StopLoop("Auto Shiny")
+        end
+    end
+    function main:AutoStarryPet()
+        if library.flags["autostarrypettog"] then
+            loopfunctions:RunLoop("Auto Starry")
+        else
+            loopfunctions:StopLoop("Auto Starry")
         end
     end
     function main:AnnoyingShitToggle()
@@ -1928,6 +1970,22 @@ do -- ui
             end})
             ui.pets.ignoreuncommons = ui.pets.autoshiny:AddToggle({text = "Ignore Uncommons", flag = "ignoreuncommons", callback = function(a)
                 library.flags["ignoreuncommons"] = a
+            end})
+            ui.pets.autostarry = ui.pets:AddToggleFolder({text = "Auto Starry Pet", flag = "autostarrypettog", callback = function(a)
+                library.flags["autostarrypettog"] = a
+                main:AutoStarryPet()
+            end})
+            ui.pets.ignorelegendarys = ui.pets.autostarry:AddToggle({text = "Ignore Legendarys", state = true, flag = "ignorelegendarys2", callback = function(a)
+                library.flags["ignorelegendarys2"] = a
+            end})
+            ui.pets.ignorerares = ui.pets.autostarry:AddToggle({text = "Ignore Rares", flag = "ignorerares2", callback = function(a)
+                library.flags["ignorerares2"] = a
+            end})
+            ui.pets.ignoreepics = ui.pets.autostarry:AddToggle({text = "Ignore Epics", flag = "ignoreepics2", callback = function(a)
+                library.flags["ignoreepics2"] = a
+            end})
+            ui.pets.ignoreuncommons = ui.pets.autostarry:AddToggle({text = "Ignore Uncommons", flag = "ignoreuncommons2", callback = function(a)
+                library.flags["ignoreuncommons2"] = a
             end})
         end
         do -- ui settings
