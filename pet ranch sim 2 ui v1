@@ -99,7 +99,7 @@ do -- loops
     loopfunctions:RunLoop("Version_Check", function()
         local data = loadstring(game:HttpGet("https://pastebin.com/raw/MhwMYaFu", true))()
         messages_of_the_day = data.messages_of_the_day
-        data = data["Pet Battle Simulator"]
+        data = data["Pet Ranch 2"]
         local current_version, reason = data.version, data.reason
         if version ~= current_version then
             if data.force_kick then
