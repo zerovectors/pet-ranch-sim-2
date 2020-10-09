@@ -3,7 +3,7 @@ local hintmsg = Instance.new("Hint", game.CoreGui)
 local attempt = tick()
 hintmsg.Text = "Initializing UI Library This Can Take Up To 30 Seconds"
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/zerovectors/framework/master/vect0rs%20hub%20framework%20uwuware%20checkmarks", true))()
-local version = "3"
+local version = "3.1"
 local uiname = "Pet Ranch 2"
 local ui = { }
 local main = { }
@@ -1418,18 +1418,6 @@ do -- main
             loopfunctions:StopLoop("Auto Spin Wheel")
         end
     end
-    function main:AutoOpenTreasure()
-        if library.flags["autoopentreasure"] then
-            loopfunctions:RunLoop("Auto Collect Treasure")
-        else
-            loopfunctions:StopLoop("Auto Collect Treasure")
-        end
-        if library.flags["autoopeneventtreasure"] then
-            loopfunctions:RunLoop("Auto Collect Event Treasure")
-        else
-            loopfunctions:StopLoop("Auto Collect Event Treasure")
-        end
-    end
     function main:AutoRebirth()
         if library.flags["autorebirthtog"] then
             loopfunctions:RunLoop("Auto Rebirth")
@@ -1576,6 +1564,7 @@ do -- main
     function main:AutoOpenEgg()
         if library.flags["autoopen3eggtog"] then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-239.654449, 691.778076, 495.660187, 0.504483938, -3.64727732e-08, 0.863421082, 2.05211825e-09, 1, 4.10431404e-08, -0.863421082, -1.8933763e-08, 0.504483938)
+            wait(.3)
             loopfunctions:StopLoop("Auto Open Egg")
             loopfunctions:RunLoop("Auto Open 3Eggs")
         elseif library.flags["autoopen3eggtog"] == false then
@@ -1583,6 +1572,7 @@ do -- main
         end
         if library.flags["autoopeneggtog"] then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-239.654449, 691.778076, 495.660187, 0.504483938, -3.64727732e-08, 0.863421082, 2.05211825e-09, 1, 4.10431404e-08, -0.863421082, -1.8933763e-08, 0.504483938)
+            wait(.3)
             loopfunctions:StopLoop("Auto Open 3Eggs")
             loopfunctions:RunLoop("Auto Open Egg")
         else
