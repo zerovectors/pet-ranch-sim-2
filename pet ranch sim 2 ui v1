@@ -373,7 +373,6 @@ do -- main
             Settings.autobuyupgrade = library.flags.autobuyupgrade
             Settings.ItemChosen = library.flags.ItemChosen
             Settings.autobuyrate = library.flags.autobuyrate
-            Settings.autobuyrate = library.flags.autobuyrate
         end
         do -- pets / eggs
             Settings.autodeleteunlockedpets = library.flags.autodeleteunlockedpets
@@ -385,6 +384,11 @@ do -- main
             Settings.ignorerares = library.flags.ignorerares
             Settings.ignoreuncommons = library.flags.ignoreuncommons
             Settings.ignoreepics = library.flags.ignoreepics
+            Settings.autostarrypettog = library.flags.autostarrypettog
+            Settings.ignorelegendarys2 = library.flags.ignorelegendarys2
+            Settings.ignorerares2 = library.flags.ignorerares2
+            Settings.ignoreuncommons2 = library.flags.ignoreuncommons2
+            Settings.ignoreepics2 = library.flags.ignoreepics2
         end
         do -- ui settings
             Settings.annoyshit = library.flags.annoyshit
@@ -434,6 +438,11 @@ do -- main
             ui.pets.ignorerares:SetState(Settings.ignorerares)
             ui.pets.ignoreuncommons:SetState(Settings.ignoreuncommons)
             ui.pets.ignoreepics:SetState(Settings.ignoreepics)
+            ui.pets.autostarry:SetState(Settings.autostarrypettog)
+            ui.pets.ignorelegendarys2:SetState(Settings.ignorelegendarys2)
+            ui.pets.ignorerares2:SetState(Settings.ignorerares2)
+            ui.pets.ignoreuncommons2:SetState(Settings.ignoreuncommons2)
+            ui.pets.ignoreepics2:SetState(Settings.ignoreepics2)
         end
         do -- ui settings
             main.uisettings.annoyingstuff:SetState(Settings.annoyshit)
@@ -1975,16 +1984,16 @@ do -- ui
                 library.flags["autostarrypettog"] = a
                 main:AutoStarryPet()
             end})
-            ui.pets.ignorelegendarys = ui.pets.autostarry:AddToggle({text = "Ignore Legendarys", state = true, flag = "ignorelegendarys2", callback = function(a)
+            ui.pets.ignorelegendarys2 = ui.pets.autostarry:AddToggle({text = "Ignore Legendarys", state = true, flag = "ignorelegendarys2", callback = function(a)
                 library.flags["ignorelegendarys2"] = a
             end})
-            ui.pets.ignorerares = ui.pets.autostarry:AddToggle({text = "Ignore Rares", flag = "ignorerares2", callback = function(a)
+            ui.pets.ignorerares2 = ui.pets.autostarry:AddToggle({text = "Ignore Rares", flag = "ignorerares2", callback = function(a)
                 library.flags["ignorerares2"] = a
             end})
-            ui.pets.ignoreepics = ui.pets.autostarry:AddToggle({text = "Ignore Epics", flag = "ignoreepics2", callback = function(a)
+            ui.pets.ignoreepics2 = ui.pets.autostarry:AddToggle({text = "Ignore Epics", flag = "ignoreepics2", callback = function(a)
                 library.flags["ignoreepics2"] = a
             end})
-            ui.pets.ignoreuncommons = ui.pets.autostarry:AddToggle({text = "Ignore Uncommons", flag = "ignoreuncommons2", callback = function(a)
+            ui.pets.ignoreuncommons2 = ui.pets.autostarry:AddToggle({text = "Ignore Uncommons", flag = "ignoreuncommons2", callback = function(a)
                 library.flags["ignoreuncommons2"] = a
             end})
         end
