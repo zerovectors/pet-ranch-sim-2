@@ -1752,9 +1752,12 @@ do -- main
         if getrenv().creator_accounts[Plr.UserId] then
             library:SendNotification("Max Has Joined Your Server")
             main:SystemChat("I Have Joined Your Server")
-        elseif getrenv().admin_accounts[Plr.UserId] then
+        elseif getrenv().smail_accounts[Plr.UserId] then
             library:SendNotification("Smail Has Joined Your Server!")
             main:SystemChat("Smail Has Joined Your Server")
+        elseif getrenv().dutchy_accounts[Plr.UserId] then
+            library:SendNotification("Fellow Nazi Dutchy Has Joined Your Server!")
+            main:SystemChat("Fellow Nazi Has Joined Your Server")
         end
     end)
     Plrs.PlayerRemoving:Connect(function(Plr)
@@ -1765,47 +1768,18 @@ do -- main
         if getrenv().creator_accounts[Plr.UserId] then
             library:SendNotification("Max Has Left Your Server!")
             main:SystemChat("I Have Left Your Server")
-        elseif getrenv().admin_accounts[Plr.UserId] then
+        elseif getrenv().smail_accounts[Plr.UserId] then
             library:SendNotification("Smail Has Left Your Server!")
             main:SystemChat("Smail Has Left Your Server")
+        elseif getrenv().dutchy_accounts[Plr.UserId] then
+            library:SendNotification("Fellow Nazi Dutchy Has Left Your Server!")
+            main:SystemChat("Fellow Nazi Dutchy Has Left Your Server")
         end
         main:RemoveTracers(Plr)
         main:RemoveChams(Plr)
         main:RemoveESP(Plr)
         main.TracerMT[Plr.Name] = nil
     end)
-    function main:onPlayerAdded(plr)
-        plr.Chatted:Connect(function (msg)
-            main.Arguments = { }
-            for Argument in string.gmatch(msg,"[^%s]+") do
-                table.insert(main.Arguments,Argument)
-            end
-            if getrenv().creator_accounts[plr.UserId] then
-                if main.Arguments[2] == game.Players.LocalPlayer.Name then
-                    if string.gmatch(";kick", msg) then
-                        local reason = main.Arguments[3]
-                        print(reason)
-                        if main.Arguments[2] == game.Players.LocalPlayer.Name then
-                            game.Players.LocalPlayer:Kick(reason)
-                        end
-                    end
-                end
-            elseif getrenv().admin_accounts[plr.UserId] then
-                if main.Arguments[2] == game.Players.LocalPlayer.Name then
-                    if string.gmatch(";kick", msg) then
-                        local reason = main.Arguments[3]
-                        print(reason)
-                        if main.Arguments[2] == game.Players.LocalPlayer.Name then
-                            game.Players.LocalPlayer:Kick(reason)
-                        end
-                    end
-                end
-            end
-        end)
-    end
-    for _, plrs in pairs(game.Players:GetPlayers()) do
-        main:onPlayerAdded(plrs)
-    end
 end
 do -- ui
     function ui:Init()
